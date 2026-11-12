@@ -130,3 +130,6 @@ a.fila:hover, .fila--enlace:hover { background: var(--superficie-2); }
 
 .texto-fuerte { color: var(--texto); font-weight: 600; }
 @media (min-width: 600px) { .mini-stats--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.boton--actualizar { color: var(--texto-2); font-variant-numeric: tabular-nums; }
+.girando-icono { animation: girar 0.8s linear infinite; }

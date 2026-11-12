@@ -6,6 +6,7 @@ import { formatoNumero, formatoPesos, hoyISO, nombreMes } from '../lib/formato'
 import { Aviso, Encabezado, Indicador } from '../components/ui'
 import Cargando from '../components/Cargando'
 import Pendientes from '../components/Pendientes'
+import BotonActualizar from '../components/Actualizar'
 
 function saludo() {
   const hora = Number(new Date().toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: 'America/Bogota' }))
@@ -64,7 +65,7 @@ export default function Inicio() {
 
   return (
     <>
-      <Encabezado titulo={saludo()} sub={<span>{fechaLarga()}</span>} />
+      <Encabezado titulo={saludo()} sub={<span>{fechaLarga()}</span>} acciones={<BotonActualizar />} />
 
       {error && <div style={{ marginBottom: 16 }}><Aviso tipo="error">{error}</Aviso></div>}
 

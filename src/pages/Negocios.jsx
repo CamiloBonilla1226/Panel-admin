@@ -6,7 +6,8 @@ import { estadoPago } from '../lib/estadoPago'
 import { urlApp, urlCorta } from '../lib/enlaces'
 import { formatoFecha, formatoNumero, formatoPesos, hace } from '../lib/formato'
 import { Aviso, Encabezado, InsigniaPago } from '../components/ui'
-import { IconoAbrir, IconoActualizar, IconoBuscar, IconoDescargar } from '../components/Iconos'
+import { IconoAbrir, IconoBuscar, IconoDescargar } from '../components/Iconos'
+import BotonActualizar from '../components/Actualizar'
 
 const sinTildes = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 const clavePago = (n) => estadoPago(n.fecha_proximo_pago).clave
@@ -68,7 +69,7 @@ function exportarCsv(negocios) {
 export default function Negocios() {
   useTitulo('Negocios')
   const navigate = useNavigate()
-  const { datos, cargando, error, recargar } = usePlataforma()
+  const { datos, cargando, error } = usePlataforma()
   const [parametros, setParametros] = useSearchParams()
   const filtro = FILTROS.some((f) => f.clave === parametros.get('filtro')) ? parametros.get('filtro') : 'activos'
   const [busqueda, setBusqueda] = useState('')
@@ -94,7 +95,7 @@ export default function Negocios() {
         titulo="Negocios"
         sub={<span>{negocios.length} en la plataforma · {negocios.filter((n) => n.activo).length} activos</span>}
         acciones={<>
-          <button className="boton boton--chico" onClick={() => recargar()} disabled={cargando}><IconoActualizar />Actualizar</button>
+          <BotonActualizar />
           <button className="boton boton--chico" onClick={() => exportarCsv(visibles)} disabled={!visibles.length}><IconoDescargar />Exportar</button>
         </>}
       />

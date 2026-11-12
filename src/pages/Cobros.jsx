@@ -8,6 +8,7 @@ import { formatoFecha, formatoPesos } from '../lib/formato'
 import { Aviso, Encabezado, Indicador } from '../components/ui'
 import { IconoWhatsapp } from '../components/Iconos'
 import Cargando from '../components/Cargando'
+import BotonActualizar from '../components/Actualizar'
 import { calcularResumen } from './Inicio'
 
 const HORIZONTE_DIAS = 30
@@ -37,7 +38,7 @@ export default function Cobros() {
 
   return (
     <>
-      <Encabezado titulo="Cobros" sub={<span>Mensualidades de los negocios</span>} />
+      <Encabezado titulo="Cobros" sub={<span>Mensualidades de los negocios</span>} acciones={<BotonActualizar />} />
 
       {error && <div style={{ marginBottom: 16 }}><Aviso tipo="error">{error}</Aviso></div>}
 
