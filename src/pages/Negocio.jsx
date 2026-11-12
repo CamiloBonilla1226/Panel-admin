@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { llamarApi, rpc, traducirError } from '../lib/api'
 import { useDatos } from '../hooks/useDatos'
+import { usePlataforma } from '../hooks/usePlataforma'
+import { numeroContacto } from '../lib/enlaces'
 import { estadoPago } from '../lib/estadoPago'
 import {
   enlaceWhatsapp, fechaDia, formatoFecha, formatoFechaHora, formatoNumero, formatoPesos,
   hace, hoyISO, nombreMes, sumarMeses, urlConProtocolo,
 } from '../lib/formato'
-import { Aviso, Campo, Confirmar, Copiable, InsigniaActivo, InsigniaPago, Seccion } from '../components/ui'
+import { Aviso, Campo, Confirmar, Copiable, Encabezado, EnlaceApp, InsigniaPago, Seccion } from '../components/ui'
+import { IconoWhatsapp } from '../components/Iconos'
 import Cargando from '../components/Cargando'
 
 const METODOS_PAGO = ['Efectivo', 'Nequi', 'Bancolombia', 'Bre-B', 'Daviplata', 'Transferencia', 'Otro']
@@ -18,12 +21,24 @@ const ESTADOS_PEDIDO = {
 const DIAS = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
 const NOMBRE_DIA = { lunes: 'Lun', martes: 'Mar', miercoles: 'Mié', jueves: 'Jue', viernes: 'Vie', sabado: 'Sáb', domingo: 'Dom' }
 
+const PESTANAS = [
+  { clave: 'resumen', texto: 'Resumen' },
+  { clave: 'pagos', texto: 'Pagos' },
+  { clave: 'usuarios', texto: 'Usuarios' },
+  { clave: 'datos', texto: 'Datos' },
+]
+
 export default function Negocio() {
   const { id } = useParams()
   const location = useLocation()
+  const [parametros, setParametros] = useSearchParams()
+  const plataforma = usePlataforma()
   const { datos, cargando, error, recargar } = useDatos(() => rpc('sa_detalle_negocio', { p_negocio_id: id }), id)
   const [aviso, setAviso] = useState(location.state?.aviso || null)
   const [confirmacion, setConfirmacion] = useState(null)
+
+  const pestana = PESTANAS.some((p) => p.clave === parametros.get('pestana')) ? parametros.get('pestana') : 'resumen'
+  const irA = (clave) => setParametros(clave === 'resumen' ? {} : { pestana: clave }, { replace: true })
 
   useEffect(() => {
     if (!aviso) return
@@ -37,13 +52,23 @@ export default function Negocio() {
     return (
       <div className="vacio">
         <strong>Este negocio no existe</strong>
-        <Link to="/">Volver a la lista</Link>
+        <Link to="/negocios" className="enlace">Volver a la lista</Link>
       </div>
     )
   }
 
-  const { negocio } = datos
-  const actualizar = () => recargar({ silencioso: true })
+  const { negocio, suscripcion, usuarios } = datos
+  // Mismo formato que las filas del resumen, para reutilizar enlaces y mensajes.
+  const resumen = {
+    ...negocio,
+    url_sitio: suscripcion?.url_sitio,
+    valor_mensual: suscripcion?.valor_mensual,
+    duenos: usuarios.filter((u) => u.rol === 'dueño'),
+  }
+  const contacto = enlaceWhatsapp(numeroContacto(resumen))
+
+  // Tras cualquier cambio se recarga la ficha y, en silencio, Inicio/Negocios/Cobros.
+  const actualizar = () => { recargar({ silencioso: true }); plataforma.recargar({ silencioso: true }) }
   const notificar = (tipo, texto) => setAviso({ tipo, texto })
 
   async function cambiarActivo() {
@@ -57,46 +82,72 @@ export default function Negocio() {
 
   return (
     <>
-      <Link to="/" className="volver">← Negocios</Link>
-      <div className="encabezado">
-        <div className="encabezado__titulos">
-          <h1>{negocio.nombre}</h1>
-          <p style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
-            <InsigniaActivo activo={negocio.activo} />
-            <InsigniaPago fecha={negocio.fecha_proximo_pago} />
-            <span className="suave">Registrado {formatoFecha(negocio.creado_en)}</span>
-          </p>
-        </div>
-        <div className="encabezado__acciones">
-          {negocio.activo ? (
-            <button className="boton boton--peligro" onClick={() => setConfirmacion('desactivar')}>Desactivar</button>
-          ) : (
-            <button className="boton boton--exito" onClick={() => setConfirmacion('activar')}>Activar</button>
+      <Encabezado
+        volver={{ a: '/negocios', texto: 'Negocios' }}
+        titulo={negocio.nombre}
+        sub={<>
+          {!negocio.activo && <span className="insignia insignia--neutra">Inactivo</span>}
+          <InsigniaPago fecha={negocio.fecha_proximo_pago} />
+          {suscripcion?.plan && <span>{suscripcion.plan}{Number(suscripcion.valor_mensual) ? ` · ${formatoPesos(suscripcion.valor_mensual)}/mes` : ''}</span>}
+        </>}
+        acciones={<>
+          {contacto && (
+            <a className="boton boton--chico boton--whatsapp" href={contacto} target="_blank" rel="noreferrer"><IconoWhatsapp />WhatsApp</a>
           )}
+          {negocio.activo ? (
+            <button className="boton boton--chico boton--peligro" onClick={() => setConfirmacion('desactivar')}>Desactivar</button>
+          ) : (
+            <button className="boton boton--chico boton--exito" onClick={() => setConfirmacion('activar')}>Activar</button>
+          )}
+        </>}
+      />
+
+      {aviso && <div className="aviso-flotante"><Aviso tipo={aviso.tipo}>{aviso.texto}</Aviso></div>}
+
+      <section className="seccion">
+        <div className="seccion__cabeza"><h2>App de domicilios</h2></div>
+        <div className="seccion__cuerpo">
+          <EnlaceApp negocio={resumen} onAgregar={() => irA('datos')} />
         </div>
-      </div>
+      </section>
 
-      {aviso && <div style={{ marginBottom: 16 }}><Aviso tipo={aviso.tipo}>{aviso.texto}</Aviso></div>}
+      <nav className="pestanas" role="tablist">
+        {PESTANAS.map((p) => (
+          <button
+            key={p.clave}
+            role="tab"
+            aria-selected={pestana === p.clave}
+            className={`pestana ${pestana === p.clave ? 'pestana--activa' : ''}`}
+            onClick={() => irA(p.clave)}
+          >
+            {p.texto}
+            {p.clave === 'pagos' && datos.pagos.length > 0 && <span className="cuenta">{datos.pagos.length}</span>}
+            {p.clave === 'usuarios' && <span className="cuenta">{usuarios.length}</span>}
+          </button>
+        ))}
+      </nav>
 
-      <div className="rejilla-detalle">
-        <div className="columna">
-          <FormularioDatos datos={datos} onGuardado={() => { notificar('ok', 'Cambios guardados.'); actualizar() }} onError={(m) => notificar('error', m)} />
-          <Usuarios datos={datos} onCambio={actualizar} notificar={notificar} />
+      {pestana === 'resumen' && (
+        <div className="rejilla-detalle">
           <Actividad datos={datos} />
+          <div className="columna">
+            <Identificacion negocio={negocio} />
+            <InfoPublica config={datos.config} />
+          </div>
         </div>
-        <div className="columna">
-          <Pagos datos={datos} onCambio={actualizar} notificar={notificar} />
-          <Identificacion negocio={negocio} />
-          <InfoPublica config={datos.config} />
-        </div>
-      </div>
+      )}
+      {pestana === 'pagos' && <Pagos datos={datos} onCambio={actualizar} notificar={notificar} />}
+      {pestana === 'usuarios' && <Usuarios datos={datos} onCambio={actualizar} notificar={notificar} />}
+      {pestana === 'datos' && (
+        <FormularioDatos datos={datos} onGuardado={() => { notificar('ok', 'Cambios guardados.'); actualizar() }} onError={(m) => notificar('error', m)} />
+      )}
 
       <Confirmar
         abierto={!!confirmacion}
         titulo={confirmacion === 'desactivar' ? `¿Desactivar ${negocio.nombre}?` : `¿Activar ${negocio.nombre}?`}
         mensaje={confirmacion === 'desactivar'
-          ? 'Su sitio dejará de mostrar el menú y mostrará el aviso de negocio inactivo hasta que lo vuelvas a activar. No se borra ningún dato.'
-          : 'Su sitio vuelve a mostrar el menú y a recibir pedidos.'}
+          ? 'Su app dejará de mostrar el menú y mostrará el aviso de negocio inactivo hasta que lo vuelvas a activar. No se borra ningún dato.'
+          : 'Su app vuelve a mostrar el menú y a recibir pedidos.'}
         textoConfirmar={confirmacion === 'desactivar' ? 'Desactivar' : 'Activar'}
         peligro={confirmacion === 'desactivar'}
         onConfirmar={cambiarActivo}

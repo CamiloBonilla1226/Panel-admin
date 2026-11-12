@@ -78,3 +78,7 @@
 .cobro__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
 .cobro__lado { display: grid; justify-items: end; gap: 6px; }
 .cobro__valor { font-weight: 600; font-size: 14px; white-space: nowrap; }
+
+/* ---------- Ficha del negocio ---------- */
+.aviso-flotante { position: sticky; top: calc(var(--barra-alto) + env(safe-area-inset-top) + 8px); z-index: 15; margin-bottom: 16px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); }
+@media (min-width: 900px) { .aviso-flotante { top: 16px; } }
