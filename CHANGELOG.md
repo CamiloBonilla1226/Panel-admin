@@ -38,3 +38,4 @@ Decisiones técnicas y funcionalidades del panel maestro, en orden cronológico.
 - Limpieza: se quitan `InsigniaActivo` y `slugificar` (solo los usaba la pantalla de crear negocio y la lista vieja) e `InsigniaPago` deja de envolver la insignia cuando no lleva fecha.
 - Ajustes tras revisar capturas en celular (390 px) y PC (1440 px): el gráfico de Inicio rotula todos los meses por nombre (el actual ya se distingue por color) y el buscador de Negocios usa un texto corto para no cortarse junto al selector de orden.
 - **README actualizado**: pantallas nuevas (Inicio, Cobros, ficha en pestañas), cómo instalar el panel en Android, iPhone y PC, el script 03 en la instalación, la estructura con `styles/` y `hooks/`, y de dónde sale el enlace de la app. Se quitó lo de "Nuevo negocio".
+- `useInstalar` tolera que el aviso de instalación ya se haya usado: el botón existe en la barra lateral y en la del celular, y el evento `beforeinstallprompt` solo se puede lanzar una vez.

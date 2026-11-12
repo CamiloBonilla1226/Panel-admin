@@ -30,12 +30,19 @@ export function useInstalar() {
     }
   }, [])
 
+  // El evento solo se puede usar una vez. Como el botón existe en la barra lateral
+  // y en la del celular, si ya se usó desde el otro, prompt() falla: se ignora.
   async function instalar() {
     if (!evento) return false
-    evento.prompt()
-    const { outcome } = await evento.userChoice
-    setEvento(null)
-    return outcome === 'accepted'
+    try {
+      evento.prompt()
+      const { outcome } = await evento.userChoice
+      return outcome === 'accepted'
+    } catch {
+      return false
+    } finally {
+      setEvento(null)
+    }
   }
 
   const ios = !instalada && esIOS()
