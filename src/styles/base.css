@@ -1,0 +1,193 @@
+/* =====================================================================
+   Panel maestro — base visual
+   Minimalista: un color de texto fuerte, grises para la jerarquía y color
+   solo para estados (al día, por vencer, vencido). Sin bordes redondeados.
+   Tema claro u oscuro según la configuración del celular o el PC.
+   ===================================================================== */
+:root {
+  --fondo: #f5f5f3;
+  --superficie: #ffffff;
+  --superficie-2: #f0f0ed;
+  --hover: #ebebe7;
+  --linea: #e4e4df;
+  --linea-fuerte: #d0d0c9;
+  --texto: #15171a;
+  --texto-2: #5b6068;
+  --texto-3: #8a8f97;
+  --primario: #15171a;
+  --primario-hover: #2c3036;
+  --primario-texto: #ffffff;
+  --acento: #2f5fe0;
+  --ok: #157347;
+  --ok-fondo: #e6f3eb;
+  --aviso: #9a5800;
+  --aviso-fondo: #fbefdb;
+  --error: #c2352a;
+  --error-fondo: #fbe8e6;
+  --info: #2f5fe0;
+  --info-fondo: #e8eefc;
+  --fuente: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, 'SF Mono', Consolas, 'Liberation Mono', monospace;
+  --barra-alto: 56px;
+  --lateral-ancho: 232px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #0f1012;
+    --superficie: #16181b;
+    --superficie-2: #1c1f23;
+    --hover: #22262b;
+    --linea: #25292e;
+    --linea-fuerte: #343940;
+    --texto: #ececea;
+    --texto-2: #a2a7af;
+    --texto-3: #6f757d;
+    --primario: #ececea;
+    --primario-hover: #ffffff;
+    --primario-texto: #111315;
+    --acento: #7097ff;
+    --ok: #4cc38a;
+    --ok-fondo: rgba(76, 195, 138, 0.13);
+    --aviso: #e5a73b;
+    --aviso-fondo: rgba(229, 167, 59, 0.13);
+    --error: #f0705f;
+    --error-fondo: rgba(240, 112, 95, 0.13);
+    --info: #7097ff;
+    --info-fondo: rgba(112, 151, 255, 0.13);
+    color-scheme: dark;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; border-radius: 0 !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+html, body { margin: 0; background: var(--fondo); color: var(--texto); }
+body {
+  font-family: var(--fuente);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+h1, h2, h3, p { margin: 0; }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+.mono { font-family: var(--mono); font-size: 0.88em; }
+.suave { color: var(--texto-2); }
+.tenue { color: var(--texto-3); }
+.num { font-variant-numeric: tabular-nums; }
+.chico { font-size: 13px; }
+.enlace { color: var(--acento); text-decoration: none; font-weight: 500; }
+.enlace:hover { text-decoration: underline; }
+.oculto-movil { display: none; }
+@media (min-width: 760px) { .oculto-movil { display: inline; } }
+
+/* ---------- Botones ---------- */
+.boton {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 40px; padding: 0 14px;
+  border: 1px solid var(--linea-fuerte); background: var(--superficie);
+  font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+.boton:hover { background: var(--hover); }
+.boton:disabled { opacity: 0.45; cursor: not-allowed; }
+.boton svg { width: 16px; height: 16px; flex: none; }
+.boton--primario { background: var(--primario); border-color: var(--primario); color: var(--primario-texto); }
+.boton--primario:hover { background: var(--primario-hover); border-color: var(--primario-hover); }
+.boton--peligro { color: var(--error); }
+.boton--peligro:hover { background: var(--error-fondo); border-color: var(--error); }
+.boton--exito { color: var(--ok); }
+.boton--exito:hover { background: var(--ok-fondo); border-color: var(--ok); }
+.boton--whatsapp { color: var(--ok); }
+.boton--whatsapp:hover { background: var(--ok-fondo); }
+.boton--fantasma { background: transparent; border-color: transparent; color: var(--texto-2); }
+.boton--fantasma:hover { background: var(--hover); color: var(--texto); }
+.boton--chico { min-height: 32px; padding: 0 10px; font-size: 13px; }
+.boton--icono { padding: 0; width: 40px; }
+.boton--chico.boton--icono { width: 32px; }
+.boton--bloque { width: 100%; }
+
+/* ---------- Formularios ---------- */
+.formulario { display: grid; gap: 14px; }
+.formulario__fila { display: grid; gap: 14px; }
+@media (min-width: 600px) { .formulario__fila { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.campo { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.campo__etiqueta { font-size: 13px; font-weight: 600; color: var(--texto-2); }
+.campo__ayuda { font-size: 12px; color: var(--texto-3); }
+.campo__control {
+  width: 100%; min-height: 42px; padding: 9px 12px;
+  background: var(--superficie); border: 1px solid var(--linea-fuerte); outline: none;
+  font-size: 16px; /* 16px evita que el iPhone haga zoom al tocar el campo */
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.campo__control:focus { border-color: var(--texto); box-shadow: 0 0 0 1px var(--texto); }
+.campo__control::placeholder { color: var(--texto-3); }
+input.campo__control, select.campo__control { height: 42px; }
+textarea.campo__control { min-height: 88px; resize: vertical; }
+select.campo__control {
+  appearance: none; padding-right: 32px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--texto-2) 50%), linear-gradient(135deg, var(--texto-2) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 18px, calc(100% - 12px) 18px; background-size: 5px 5px; background-repeat: no-repeat;
+}
+@media (min-width: 760px) { .campo__control { font-size: 14px; } }
+.casilla { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 14px; }
+.casilla input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--primario); flex: none; }
+.acciones-form { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+
+/* ---------- Insignias de estado ---------- */
+.insignia {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 2px 8px; font-size: 12px; font-weight: 600; white-space: nowrap; line-height: 1.5;
+  background: var(--superficie-2); color: var(--texto-2);
+}
+.insignia::before { content: ''; width: 6px; height: 6px; background: currentColor; flex: none; }
+.insignia--ok { color: var(--ok); background: var(--ok-fondo); }
+.insignia--aviso { color: var(--aviso); background: var(--aviso-fondo); }
+.insignia--error { color: var(--error); background: var(--error-fondo); }
+.insignia--info { color: var(--info); background: var(--info-fondo); }
+.insignia--neutra { color: var(--texto-2); }
+
+/* ---------- Avisos ---------- */
+.aviso { padding: 12px 14px; border-left: 3px solid var(--linea-fuerte); font-size: 14px; background: var(--superficie-2); }
+.aviso--error { border-left-color: var(--error); background: var(--error-fondo); color: var(--error); }
+.aviso--ok { border-left-color: var(--ok); background: var(--ok-fondo); color: var(--ok); }
+.aviso--info { border-left-color: var(--info); background: var(--info-fondo); }
+.aviso strong { color: inherit; }
+
+/* ---------- Copiar ---------- */
+.copiable { display: flex; align-items: stretch; border: 1px solid var(--linea-fuerte); background: var(--superficie); min-width: 0; }
+.copiable code { flex: 1; min-width: 0; padding: 9px 10px; font-family: var(--mono); font-size: 12.5px; overflow-x: auto; white-space: nowrap; }
+.copiable button { flex: none; border: 0; border-left: 1px solid var(--linea-fuerte); background: var(--superficie-2); padding: 0 12px; cursor: pointer; font-size: 13px; font-weight: 600; }
+.copiable button:hover { background: var(--hover); }
+pre.codigo { margin: 0; padding: 12px; background: var(--superficie-2); border: 1px solid var(--linea); font-family: var(--mono); font-size: 12.5px; overflow-x: auto; line-height: 1.6; }
+
+/* ---------- Carga y vacíos ---------- */
+.vacio { padding: 40px 16px; text-align: center; color: var(--texto-2); font-size: 14px; }
+.vacio strong { display: block; color: var(--texto); font-size: 15px; margin-bottom: 4px; }
+.cargando { display: grid; place-items: center; padding: 64px 16px; color: var(--texto-2); gap: 12px; }
+.girando { width: 20px; height: 20px; border: 2px solid var(--linea-fuerte); border-top-color: var(--texto); animation: girar 0.8s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+.esqueleto { background: linear-gradient(90deg, var(--superficie) 0%, var(--superficie-2) 50%, var(--superficie) 100%); background-size: 200% 100%; animation: brillo 1.2s ease-in-out infinite; height: 68px; border-bottom: 1px solid var(--linea); }
+@keyframes brillo { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* ---------- Diálogo (hoja inferior en el celular) ---------- */
+.capa { position: fixed; inset: 0; z-index: 50; background: rgba(10, 11, 13, 0.5); display: grid; place-items: end center; animation: aparecer 140ms ease-out; }
+.dialogo { width: 100%; max-width: 440px; background: var(--superficie); border-top: 1px solid var(--linea); padding: 20px 16px calc(16px + env(safe-area-inset-bottom)); animation: subir 180ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.dialogo h3 { font-size: 17px; margin-bottom: 8px; }
+.dialogo p { color: var(--texto-2); margin-bottom: 18px; }
+@media (min-width: 600px) {
+  .capa { place-items: center; padding: 16px; }
+  .dialogo { padding: 24px; border: 1px solid var(--linea); }
+}
+@keyframes aparecer { from { opacity: 0; } }
+@keyframes subir { from { transform: translateY(16px); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+}
