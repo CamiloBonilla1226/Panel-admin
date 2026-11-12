@@ -6,7 +6,6 @@ import Cargando from './components/Cargando'
 import Login from './pages/Login'
 import Negocios from './pages/Negocios'
 import Negocio from './pages/Negocio'
-import NuevoNegocio from './pages/NuevoNegocio'
 
 export default function App() {
   const { cargando, usuario, esSuperadmin } = useSesion()
@@ -33,7 +32,6 @@ export default function App() {
     <Layout correo={usuario.email}>
       <Routes>
         <Route path="/" element={<Negocios />} />
-        <Route path="/negocios/nuevo" element={<NuevoNegocio />} />
         <Route path="/negocios/:id" element={<Negocio />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

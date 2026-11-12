@@ -11,3 +11,6 @@ Decisiones técnicas y funcionalidades del panel maestro, en orden cronológico.
 - **Crear dueños y restablecer contraseñas con funciones serverless de Vercel (`/api`)** en vez de una Edge Function de Supabase: se despliegan solas con el repo, sin CLI de Supabase. Son el único lugar con la service_role key (variable sin prefijo `VITE_`, así Vite nunca la incluye en el navegador). Verifican el token con `auth.getUser` y exigen superadmin. `crear-dueno` replica `crear-usuario-admin` del proyecto base (mismo correo interno, mismo id en Auth y en `usuarios_admin`, revierte la cuenta si falla el insert) y pone el `app_metadata` en el mismo `createUser`.
 - **Sin opción de borrar negocios**: el borrado es en cascada (catálogo, usuarios, pedidos). Para dar de baja se desactiva.
 - Interfaz: mobile-first (tabla que se vuelve tarjetas en el celular, navegación inferior), esquinas rectas en todo, tema oscuro, `noindex`.
+
+### Rediseño del panel (v2)
+- **Ya no se crean negocios desde el panel maestro**: se quitó la pantalla "Nuevo negocio", su ruta y sus botones. Los negocios nacen con su propio proyecto (clon del base) y el panel solo los administra; así se evita registrar por error un negocio sin proyecto detrás.

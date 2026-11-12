@@ -103,7 +103,6 @@ export default function Negocios() {
         <div className="encabezado__acciones">
           <button className="boton" onClick={() => recargar()} disabled={cargando}>Actualizar</button>
           <button className="boton" onClick={() => exportarCsv(visibles)} disabled={!visibles.length}>Exportar CSV</button>
-          <Link className="boton boton--primario" to="/negocios/nuevo">Nuevo negocio</Link>
         </div>
       </div>
 
@@ -176,7 +175,7 @@ export default function Negocios() {
         ) : visibles.length === 0 ? (
           <div className="vacio">
             <strong>{negocios.length ? 'Ningún negocio coincide' : 'Todavía no hay negocios'}</strong>
-            {negocios.length ? 'Prueba con otro filtro o búsqueda.' : 'Crea el primero con "Nuevo negocio".'}
+            {negocios.length ? 'Prueba con otro filtro o búsqueda.' : 'Los negocios se registran desde su propio proyecto.'}
           </div>
         ) : (
           <table className="tabla">

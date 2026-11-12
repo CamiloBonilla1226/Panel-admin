@@ -9,14 +9,6 @@ function IconoLista() {
   )
 }
 
-function IconoMas() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-      <path d="M12 5v14M5 12h14" strokeLinecap="square" />
-    </svg>
-  )
-}
-
 export function Logo() {
   return <span className="barra__logo" aria-hidden="true"><span /></span>
 }
@@ -28,7 +20,6 @@ export default function Layout({ correo, children }) {
         <Link to="/" className="barra__marca"><Logo /> Panel maestro</Link>
         <nav className="barra__nav">
           <NavLink to="/" end>Negocios</NavLink>
-          <NavLink to="/negocios/nuevo">Nuevo negocio</NavLink>
         </nav>
         <div className="barra__derecha">
           <span className="barra__correo">{correo}</span>
@@ -40,7 +31,6 @@ export default function Layout({ correo, children }) {
 
       <nav className="nav-movil">
         <NavLink to="/" end><IconoLista />Negocios</NavLink>
-        <NavLink to="/negocios/nuevo"><IconoMas />Nuevo</NavLink>
       </nav>
     </div>
   )
