@@ -127,3 +127,6 @@ a.fila:hover, .fila--enlace:hover { background: var(--superficie-2); }
 
 .apilado { display: grid; gap: 4px; justify-items: start; }
 .apilado__sub { font-size: 13px; color: var(--texto-2); }
+
+.texto-fuerte { color: var(--texto); font-weight: 600; }
+@media (min-width: 600px) { .mini-stats--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }

@@ -645,17 +645,17 @@ function FormularioPago({ negocio, valorMensual, onCancelar, onRegistrado }) {
 function Actividad({ datos }) {
   const { catalogo, pedidos } = datos
   const porMes = pedidos.por_mes || []
+  const mes = porMes[porMes.length - 1] || { pedidos: 0, ventas: 0 }
   const maximo = Math.max(1, ...porMes.map((m) => m.pedidos))
+  const estados = Object.entries(pedidos.por_estado || {})
 
   return (
-    <Seccion titulo="Actividad" sinRelleno extra={<span className="suave">Último pedido: {hace(pedidos.ultimo)}</span>}>
-      <div className="mini-stats">
-        <div><strong>{formatoNumero(pedidos.total)}</strong><span>Pedidos totales</span></div>
-        <div><strong>{formatoPesos(pedidos.ventas_total)}</strong><span>Ventas totales</span></div>
-        <div><strong>{formatoNumero(catalogo.productos)}</strong><span>Productos · {catalogo.productos_disponibles} disponibles</span></div>
-        <div><strong>{formatoNumero(catalogo.categorias)}</strong><span>Categorías</span></div>
-        <div><strong>{formatoNumero(catalogo.adiciones)}</strong><span>Adiciones</span></div>
-        <div><strong>{formatoNumero(catalogo.ofertas_activas)}</strong><span>Ofertas activas</span></div>
+    <Seccion titulo="Cómo le va" sinRelleno extra={<span className="suave">Último pedido {hace(pedidos.ultimo)}</span>}>
+      <div className="mini-stats mini-stats--4">
+        <div><strong>{formatoNumero(mes.pedidos)}</strong><span>Pedidos este mes</span></div>
+        <div><strong>{formatoPesos(mes.ventas)}</strong><span>Ventas este mes</span></div>
+        <div><strong>{formatoNumero(pedidos.total)}</strong><span>Pedidos en total</span></div>
+        <div><strong>{formatoPesos(pedidos.ventas_total)}</strong><span>Ventas en total</span></div>
       </div>
       <div className="seccion__cuerpo">
         <div className="campo__etiqueta">Pedidos por mes</div>
@@ -674,9 +674,15 @@ function Actividad({ datos }) {
             </div>
           ))}
         </div>
-        {Object.keys(pedidos.por_estado || {}).length > 0 && (
-          <div className="estados" style={{ marginTop: 16 }}>
-            {Object.entries(pedidos.por_estado).map(([estado, cantidad]) => (
+      </div>
+      <div className="seccion__pie suave">
+        <strong className="texto-fuerte">{formatoNumero(catalogo.productos_disponibles)}</strong> de {formatoNumero(catalogo.productos)} productos disponibles
+        {' · '}{formatoNumero(catalogo.categorias)} categorías
+        {' · '}{formatoNumero(catalogo.adiciones)} adiciones
+        {' · '}{formatoNumero(catalogo.ofertas_activas)} ofertas activas
+        {estados.length > 0 && (
+          <div className="estados" style={{ marginTop: 10 }}>
+            {estados.map(([estado, cantidad]) => (
               <span key={estado} className="insignia insignia--neutra">{ESTADOS_PEDIDO[estado] || estado}: {cantidad}</span>
             ))}
           </div>
@@ -687,9 +693,9 @@ function Actividad({ datos }) {
 }
 
 function Identificacion({ negocio }) {
-  const sitio = urlConProtocolo(negocio.dominio_propio)
+  const whatsapp = enlaceWhatsapp(negocio.whatsapp_contacto)
   return (
-    <Seccion titulo="Identificación">
+    <Seccion titulo="Datos técnicos">
       <div className="formulario">
         <Campo etiqueta="ID del negocio" ayuda="Es el negocioId de src/config/negocio.config.js en el proyecto del negocio.">
           <Copiable texto={negocio.id} />
@@ -697,12 +703,10 @@ function Identificacion({ negocio }) {
         <dl className="datos">
           <div><dt>Slug</dt><dd className="mono">{negocio.slug}</dd></div>
           <div>
-            <dt>WhatsApp</dt>
-            <dd>{enlaceWhatsapp(negocio.whatsapp_contacto)
-              ? <a className="mono" href={enlaceWhatsapp(negocio.whatsapp_contacto)} target="_blank" rel="noreferrer">{negocio.whatsapp_contacto}</a>
-              : '—'}</dd>
+            <dt>WhatsApp de pedidos</dt>
+            <dd>{whatsapp ? <a className="enlace mono" href={whatsapp} target="_blank" rel="noreferrer">{negocio.whatsapp_contacto}</a> : '—'}</dd>
           </div>
-          <div><dt>Dominio propio</dt><dd>{sitio ? <a href={sitio} target="_blank" rel="noreferrer">{negocio.dominio_propio}</a> : '—'}</dd></div>
+          <div><dt>Registrado</dt><dd>{formatoFecha(negocio.creado_en)}</dd></div>
         </dl>
       </div>
     </Seccion>
