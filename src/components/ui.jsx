@@ -1,6 +1,81 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { estadoPago } from '../lib/estadoPago'
 import { formatoFecha } from '../lib/formato'
+import { urlAdmin, urlApp, urlCorta, whatsappEnlaceApp } from '../lib/enlaces'
+import { IconoAbrir, IconoAtras, IconoCopiar, IconoWhatsapp } from './Iconos'
+
+// Encabezado de cada pantalla: título, línea secundaria y acciones.
+export function Encabezado({ titulo, sub, acciones, volver }) {
+  return (
+    <>
+      {volver && <Link to={volver.a} className="volver"><IconoAtras />{volver.texto}</Link>}
+      <div className="encabezado">
+        <div className="encabezado__titulos">
+          <h1>{titulo}</h1>
+          {sub && <div className="encabezado__sub">{sub}</div>}
+        </div>
+        {acciones && <div className="encabezado__acciones">{acciones}</div>}
+      </div>
+    </>
+  )
+}
+
+// Una cifra con su etiqueta. `a` la vuelve enlace (ej. "3 vencidos" → Cobros).
+export function Indicador({ etiqueta, valor, nota, tono, a }) {
+  const contenido = (
+    <>
+      <div className="kpi__etiqueta">{etiqueta}</div>
+      <div className="kpi__valor">{valor}</div>
+      {nota && <div className="kpi__nota">{nota}</div>}
+    </>
+  )
+  const clase = `kpi ${tono ? `kpi--${tono}` : ''}`
+  return a ? <Link to={a} className={clase}>{contenido}</Link> : <div className={clase}>{contenido}</div>
+}
+
+// Botón de copiar con confirmación breve.
+export function BotonCopiar({ texto, etiqueta = 'Copiar', className = 'boton boton--chico' }) {
+  const [copiado, setCopiado] = useState(false)
+  useEffect(() => {
+    if (!copiado) return
+    const t = setTimeout(() => setCopiado(false), 1500)
+    return () => clearTimeout(t)
+  }, [copiado])
+  return (
+    <button type="button" className={className} onClick={() => navigator.clipboard?.writeText(texto).then(() => setCopiado(true))}>
+      <IconoCopiar />{copiado ? 'Copiado' : etiqueta}
+    </button>
+  )
+}
+
+// Enlace de la app de domicilios del negocio con sus acciones: abrir, copiar,
+// enviárselo al dueño por WhatsApp y entrar a su panel /admin.
+export function EnlaceApp({ negocio, duenos, onAgregar }) {
+  const app = urlApp(negocio)
+  if (!app) {
+    return (
+      <div className="enlace-app__falta">
+        <span>Este negocio no tiene el enlace de su app.</span>
+        {onAgregar && <button className="boton boton--chico" onClick={onAgregar}>Agregar enlace</button>}
+      </div>
+    )
+  }
+  const whatsapp = whatsappEnlaceApp(negocio, duenos)
+  return (
+    <div className="enlace-app">
+      <a className="enlace-app__url" href={app} target="_blank" rel="noreferrer">
+        <span>{urlCorta(app)}</span><IconoAbrir />
+      </a>
+      <div className="enlace-app__acciones">
+        <a className="boton boton--chico boton--primario" href={app} target="_blank" rel="noreferrer"><IconoAbrir />Abrir app</a>
+        <BotonCopiar texto={app} />
+        {whatsapp && <a className="boton boton--chico boton--whatsapp" href={whatsapp} target="_blank" rel="noreferrer"><IconoWhatsapp />Enviar</a>}
+        <a className="boton boton--chico boton--fantasma" href={urlAdmin(negocio)} target="_blank" rel="noreferrer">Panel del dueño</a>
+      </div>
+    </div>
+  )
+}
 
 export function Campo({ etiqueta, ayuda, children }) {
   return (
