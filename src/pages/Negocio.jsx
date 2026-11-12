@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import { llamarApi, rpc, traducirError } from '../lib/api'
 import { useDatos } from '../hooks/useDatos'
 import { usePlataforma } from '../hooks/usePlataforma'
-import { numeroContacto, urlApp, urlCorta } from '../lib/enlaces'
+import { numeroContacto, urlApp, urlCorta, whatsappCobro } from '../lib/enlaces'
 import { estadoPago } from '../lib/estadoPago'
 import {
   enlaceWhatsapp, fechaDia, formatoFecha, formatoFechaHora, formatoNumero, formatoPesos,
@@ -136,7 +136,7 @@ export default function Negocio() {
           </div>
         </div>
       )}
-      {pestana === 'pagos' && <Pagos datos={datos} onCambio={actualizar} notificar={notificar} />}
+      {pestana === 'pagos' && <Pagos datos={datos} resumen={resumen} onCambio={actualizar} notificar={notificar} />}
       {pestana === 'usuarios' && <Usuarios datos={datos} onCambio={actualizar} notificar={notificar} />}
       {pestana === 'datos' && (
         <FormularioDatos datos={datos} onGuardado={() => { notificar('ok', 'Cambios guardados.'); actualizar() }} onError={(m) => notificar('error', m)} />
@@ -430,9 +430,16 @@ function FormularioContrasena({ usuario, onCancelar, onListo }) {
 
 /* ------------------------------------------------------------------ */
 
-function Pagos({ datos, onCambio, notificar }) {
+function Pagos({ datos, resumen, onCambio, notificar }) {
   const { negocio, suscripcion, pagos } = datos
-  const [registrando, setRegistrando] = useState(false)
+  const [parametros, setParametros] = useSearchParams()
+  // Desde Cobros se llega con ?registrar=1 para abrir el formulario de una vez.
+  const [registrando, setRegistrando] = useState(parametros.get('registrar') === '1')
+  useEffect(() => {
+    if (parametros.get('registrar')) setParametros({ pestana: 'pagos' }, { replace: true })
+  }, [parametros, setParametros])
+  const estado = estadoPago(negocio.fecha_proximo_pago)
+  const whatsapp = negocio.activo && ['vencido', 'por_vencer'].includes(estado.clave) ? whatsappCobro(resumen) : null
   const [eliminando, setEliminando] = useState(null)
   const totalPagado = pagos.reduce((s, p) => s + Number(p.monto), 0)
 
@@ -451,10 +458,27 @@ function Pagos({ datos, onCambio, notificar }) {
       sinRelleno
       extra={!registrando && <button className="boton boton--primario boton--chico" onClick={() => setRegistrando(true)}>Registrar pago</button>}
     >
-      <div className="mini-stats" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
-        <div><strong>{formatoPesos(totalPagado)}</strong><span>Total pagado · {pagos.length} pago{pagos.length === 1 ? '' : 's'}</span></div>
-        <div><strong>{negocio.fecha_proximo_pago ? formatoFecha(negocio.fecha_proximo_pago) : '—'}</strong><span>Próximo pago</span></div>
+      <div className="mini-stats">
+        <div>
+          <strong>{negocio.fecha_proximo_pago ? formatoFecha(negocio.fecha_proximo_pago) : '—'}</strong>
+          <span>Próximo pago · {estado.texto.toLowerCase()}</span>
+        </div>
+        <div>
+          <strong>{Number(suscripcion?.valor_mensual) ? formatoPesos(suscripcion.valor_mensual) : '—'}</strong>
+          <span>Mensualidad</span>
+        </div>
+        <div className="mini-stats__total">
+          <strong>{formatoPesos(totalPagado)}</strong>
+          <span>Total pagado · {pagos.length} pago{pagos.length === 1 ? '' : 's'}</span>
+        </div>
       </div>
+
+      {whatsapp && !registrando && (
+        <div className="seccion__cuerpo pagos__recordar">
+          <span className={`insignia insignia--${estado.clave === 'vencido' ? 'error' : 'aviso'}`}>{estado.texto}</span>
+          <a className="boton boton--chico boton--whatsapp" href={whatsapp} target="_blank" rel="noreferrer"><IconoWhatsapp />Enviar recordatorio</a>
+        </div>
+      )}
 
       {registrando && (
         <div className="seccion__cuerpo" style={{ borderBottom: '1px solid var(--linea)' }}>

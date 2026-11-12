@@ -92,3 +92,7 @@
 .barra-guardar .boton { width: 100%; }
 @media (min-width: 600px) { .barra-guardar .boton { width: auto; } }
 @media (min-width: 900px) { .barra-guardar { bottom: 0; } }
+
+.mini-stats__total { grid-column: 1 / -1; }
+@media (min-width: 600px) { .mini-stats__total { grid-column: auto; } }
+.pagos__recordar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid var(--linea); padding-top: 12px; padding-bottom: 12px; }
