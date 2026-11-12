@@ -104,20 +104,16 @@ export function Aviso({ tipo = 'info', children }) {
   return <div className={`aviso aviso--${tipo}`} role={tipo === 'error' ? 'alert' : 'status'}>{children}</div>
 }
 
-export function InsigniaActivo({ activo }) {
-  return activo
-    ? <span className="insignia insignia--ok">Activo</span>
-    : <span className="insignia insignia--neutra">Inactivo</span>
-}
-
 const TIPO_PAGO = { vencido: 'error', por_vencer: 'aviso', al_dia: 'ok', sin_fecha: 'neutra' }
 
 export function InsigniaPago({ fecha, conFecha = false }) {
   const estado = estadoPago(fecha)
+  const insignia = <span className={`insignia insignia--${TIPO_PAGO[estado.clave]}`}>{estado.texto}</span>
+  if (!conFecha || !fecha) return insignia
   return (
     <span className="apilado">
-      <span className={`insignia insignia--${TIPO_PAGO[estado.clave]}`}>{estado.texto}</span>
-      {conFecha && fecha && <span className="apilado__sub">{formatoFecha(fecha)}</span>}
+      {insignia}
+      <span className="apilado__sub">{formatoFecha(fecha)}</span>
     </span>
   )
 }

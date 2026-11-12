@@ -42,6 +42,6 @@ export function traducirError(error) {
   if (/Could not find the function|function .* does not exist|schema cache/i.test(mensaje)) {
     return 'Falta correr supabase/01-migracion-panel-maestro.sql en Supabase.'
   }
-  if (/duplicate key.*slug/i.test(mensaje)) return 'Ya existe un negocio con ese slug.'
+  if (/duplicate key.*slug/i.test(mensaje)) return 'Ya existe otro negocio con ese slug.'
   return mensaje
 }

@@ -62,12 +62,6 @@ export function nombreMes(mesISO) {
   return new Date(a, m - 1, 15).toLocaleDateString('es-CO', { month: 'short' }).replace('.', '')
 }
 
-export function slugificar(texto) {
-  return String(texto)
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
-}
-
 // Enlace wa.me. Si el número viene sin indicativo (10 dígitos) se asume Colombia.
 // `texto` deja el mensaje escrito para que solo haya que tocar "Enviar".
 export function enlaceWhatsapp(numeroTel, texto) {
