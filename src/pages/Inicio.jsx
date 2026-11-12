@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { inicioMes, usePlataforma } from '../hooks/usePlataforma'
+import { useTitulo } from '../hooks/useTitulo'
 import { estadoPago } from '../lib/estadoPago'
 import { formatoNumero, formatoPesos, hoyISO, nombreMes } from '../lib/formato'
 import { Aviso, Encabezado, Indicador } from '../components/ui'
@@ -51,6 +52,7 @@ function cobradoPorMes(pagos) {
 }
 
 export default function Inicio() {
+  useTitulo('Inicio')
   const { datos, cargando, error } = usePlataforma()
   const negocios = useMemo(() => datos?.negocios || [], [datos])
   const pagos = useMemo(() => datos?.pagos || [], [datos])

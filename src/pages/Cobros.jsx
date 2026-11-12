@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { usePlataforma } from '../hooks/usePlataforma'
+import { useTitulo } from '../hooks/useTitulo'
 import { estadoPago } from '../lib/estadoPago'
 import { whatsappCobro } from '../lib/enlaces'
 import { formatoFecha, formatoPesos } from '../lib/formato'
@@ -16,6 +17,7 @@ const PAGOS_VISIBLES = 12
 // 30 días y qué se ha cobrado. Registrar el pago se hace en la ficha del
 // negocio (pestaña Pagos), que ya calcula la nueva fecha.
 export default function Cobros() {
+  useTitulo('Cobros')
   const { datos, cargando, error } = usePlataforma()
   const negocios = useMemo(() => datos?.negocios || [], [datos])
   const pagos = useMemo(() => datos?.pagos || [], [datos])

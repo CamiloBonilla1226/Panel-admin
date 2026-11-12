@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { usePlataforma } from '../hooks/usePlataforma'
+import { useTitulo } from '../hooks/useTitulo'
 import { estadoPago } from '../lib/estadoPago'
 import { urlApp, urlCorta } from '../lib/enlaces'
 import { formatoFecha, formatoNumero, formatoPesos, hace } from '../lib/formato'
@@ -65,6 +66,7 @@ function exportarCsv(negocios) {
 }
 
 export default function Negocios() {
+  useTitulo('Negocios')
   const navigate = useNavigate()
   const { datos, cargando, error, recargar } = usePlataforma()
   const [parametros, setParametros] = useSearchParams()

@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { llamarApi, rpc, traducirError } from '../lib/api'
 import { useDatos } from '../hooks/useDatos'
 import { usePlataforma } from '../hooks/usePlataforma'
+import { useTitulo } from '../hooks/useTitulo'
 import { numeroContacto, urlApp, urlCorta, whatsappCobro } from '../lib/enlaces'
 import { estadoPago } from '../lib/estadoPago'
 import {
@@ -36,6 +37,7 @@ export default function Negocio() {
   const { datos, cargando, error, recargar } = useDatos(() => rpc('sa_detalle_negocio', { p_negocio_id: id }), id)
   const [aviso, setAviso] = useState(location.state?.aviso || null)
   const [confirmacion, setConfirmacion] = useState(null)
+  useTitulo(datos?.negocio?.nombre || 'Negocio')
 
   const pestana = PESTANAS.some((p) => p.clave === parametros.get('pestana')) ? parametros.get('pestana') : 'resumen'
   const irA = (clave) => setParametros(clave === 'resumen' ? {} : { pestana: clave }, { replace: true })
