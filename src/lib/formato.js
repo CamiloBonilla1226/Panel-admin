@@ -68,10 +68,13 @@ export function slugificar(texto) {
     .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
-export function enlaceWhatsapp(numeroTel) {
+// Enlace wa.me. Si el número viene sin indicativo (10 dígitos) se asume Colombia.
+// `texto` deja el mensaje escrito para que solo haya que tocar "Enviar".
+export function enlaceWhatsapp(numeroTel, texto) {
   const limpio = String(numeroTel || '').replace(/\D/g, '')
   if (!limpio) return null
-  return `https://wa.me/${limpio.length === 10 ? `57${limpio}` : limpio}`
+  const base = `https://wa.me/${limpio.length === 10 ? `57${limpio}` : limpio}`
+  return texto ? `${base}?text=${encodeURIComponent(texto)}` : base
 }
 
 export function urlConProtocolo(url) {
