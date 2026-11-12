@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import Inicio from './pages/Inicio'
 import Negocios from './pages/Negocios'
 import Negocio from './pages/Negocio'
+import Cobros from './pages/Cobros'
 
 export default function App() {
   const { cargando, usuario, esSuperadmin } = useSesion()
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/" element={<Inicio />} />
           <Route path="/negocios" element={<Negocios />} />
           <Route path="/negocios/:id" element={<Negocio />} />
+          <Route path="/cobros" element={<Cobros />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Layout>

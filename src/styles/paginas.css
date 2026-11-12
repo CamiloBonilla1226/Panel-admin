@@ -67,3 +67,14 @@
 .pendiente__info:hover .fila__titulo { text-decoration: underline; }
 .pendiente__motivo { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
 .pendiente .insignia { white-space: normal; }
+
+/* ---------- Cobros ---------- */
+@media (min-width: 900px) { .kpis--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.kpis--3 > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (min-width: 900px) { .kpis--3 > :last-child:nth-child(odd) { grid-column: auto; } }
+.cobro { align-items: center; }
+.cobro__info { display: grid; gap: 4px; min-width: 0; text-decoration: none; }
+.cobro__info:hover .fila__titulo { text-decoration: underline; }
+.cobro__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.cobro__lado { display: grid; justify-items: end; gap: 6px; }
+.cobro__valor { font-weight: 600; font-size: 14px; white-space: nowrap; }

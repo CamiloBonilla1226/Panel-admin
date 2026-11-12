@@ -1,13 +1,14 @@
 import { Link, NavLink } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import BotonInstalar from './Instalar'
-import { IconoInicio, IconoNegocios, IconoSalir } from './Iconos'
+import { IconoCobros, IconoInicio, IconoNegocios, IconoSalir } from './Iconos'
 
 // Secciones principales. Las mismas en la barra lateral (PC) y en la barra
 // inferior (celular), para que se encuentren igual en los dos.
 export const SECCIONES = [
   { ruta: '/', texto: 'Inicio', Icono: IconoInicio, exacta: true },
   { ruta: '/negocios', texto: 'Negocios', Icono: IconoNegocios },
+  { ruta: '/cobros', texto: 'Cobros', Icono: IconoCobros },
 ]
 
 export function Logo() {
