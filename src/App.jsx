@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useSesion } from './hooks/useSesion'
+import { PlataformaProvider } from './hooks/usePlataforma'
 import { supabase } from './lib/supabase'
 import Layout from './components/Layout'
 import Cargando from './components/Cargando'
@@ -29,12 +30,15 @@ export default function App() {
   }
 
   return (
-    <Layout correo={usuario.email}>
-      <Routes>
-        <Route path="/" element={<Negocios />} />
-        <Route path="/negocios/:id" element={<Negocio />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Layout>
+    <PlataformaProvider>
+      <Layout correo={usuario.email}>
+        <Routes>
+          <Route path="/" element={<Negocios />} />
+          <Route path="/negocios" element={<Negocios />} />
+          <Route path="/negocios/:id" element={<Negocio />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Layout>
+    </PlataformaProvider>
   )
 }
