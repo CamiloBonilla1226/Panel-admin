@@ -115,9 +115,9 @@ const TIPO_PAGO = { vencido: 'error', por_vencer: 'aviso', al_dia: 'ok', sin_fec
 export function InsigniaPago({ fecha, conFecha = false }) {
   const estado = estadoPago(fecha)
   return (
-    <span className="tabla__apilado">
+    <span className="apilado">
       <span className={`insignia insignia--${TIPO_PAGO[estado.clave]}`}>{estado.texto}</span>
-      {conFecha && fecha && <span className="tabla__sub">{formatoFecha(fecha)}</span>}
+      {conFecha && fecha && <span className="apilado__sub">{formatoFecha(fecha)}</span>}
     </span>
   )
 }
