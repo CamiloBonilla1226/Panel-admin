@@ -14,3 +14,4 @@ Decisiones técnicas y funcionalidades del panel maestro, en orden cronológico.
 
 ### Rediseño del panel (v2)
 - **Ya no se crean negocios desde el panel maestro**: se quitó la pantalla "Nuevo negocio", su ruta y sus botones. Los negocios nacen con su propio proyecto (clon del base) y el panel solo los administra; así se evita registrar por error un negocio sin proyecto detrás.
+- **`supabase/03-quitar-creacion-negocios.sql`**: borra la política "Superadmin crea negocios". Quitar el botón no basta: con la sesión del superadmin cualquiera podría seguir insertando negocios por la API. Ver/editar/activar se conservan. Documentado en `explicacion-script-bd.txt` del proyecto base.
