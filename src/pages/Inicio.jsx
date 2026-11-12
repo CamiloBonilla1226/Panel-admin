@@ -4,6 +4,7 @@ import { estadoPago } from '../lib/estadoPago'
 import { formatoNumero, formatoPesos, hoyISO, nombreMes } from '../lib/formato'
 import { Aviso, Encabezado, Indicador } from '../components/ui'
 import Cargando from '../components/Cargando'
+import Pendientes from '../components/Pendientes'
 
 function saludo() {
   const hora = Number(new Date().toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: 'America/Bogota' }))
@@ -93,26 +94,30 @@ export default function Inicio() {
         />
       </div>
 
-      <section className="seccion">
-        <div className="seccion__cabeza">
-          <h2>Cobrado por mes</h2>
-          <span className="suave">Ingreso esperado: {formatoPesos(r.ingresoMensual)}/mes</span>
-        </div>
-        <div className="seccion__cuerpo">
-          <div className="barras">
-            {porMes.map((m) => (
-              <div key={m.mes} className="barras__col" title={formatoPesos(m.total)}>
-                <div className="barras__pista">
-                  <div className={`barras__barra ${m.total ? '' : 'barras__barra--vacia'}`} style={{ height: `${(m.total / maximo) * 100}%` }}>
-                    <span className="barras__valor">{m.total ? `${Math.round(m.total / 1000)}k` : ''}</span>
-                  </div>
-                </div>
-                <div className="barras__mes">{m.mes === hoyISO().slice(0, 7) ? 'Este mes' : nombreMes(m.mes)}</div>
-              </div>
-            ))}
+      <div className="inicio">
+        <Pendientes negocios={negocios} />
+
+        <section className="seccion">
+          <div className="seccion__cabeza">
+            <h2>Cobrado por mes</h2>
+            <span className="suave">Ingreso esperado: {formatoPesos(r.ingresoMensual)}/mes</span>
           </div>
-        </div>
-      </section>
+          <div className="seccion__cuerpo">
+            <div className="barras">
+              {porMes.map((m) => (
+                <div key={m.mes} className="barras__col" title={formatoPesos(m.total)}>
+                  <div className="barras__pista">
+                    <div className={`barras__barra ${m.total ? '' : 'barras__barra--vacia'}`} style={{ height: `${(m.total / maximo) * 100}%` }}>
+                      <span className="barras__valor">{m.total ? `${Math.round(m.total / 1000)}k` : ''}</span>
+                    </div>
+                  </div>
+                  <div className="barras__mes">{m.mes === hoyISO().slice(0, 7) ? 'Este mes' : nombreMes(m.mes)}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
     </>
   )
 }
