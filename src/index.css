@@ -1,13 +1,7 @@
+/* Estilos del panel maestro, en orden: base (colores, tipografía, botones,
+   formularios), estructura (barras y navegación), componentes compartidos y
+   estilos propios de cada pantalla. */
 @import './styles/base.css';
 @import './styles/layout.css';
 @import './styles/componentes.css';
 @import './styles/paginas.css';
-
-/* Estilos de páginas que todavía no se han pasado a styles/. */
-
-/* ---------- Login ---------- */
-.login { min-height: 100svh; display: grid; place-items: center; padding: 24px 16px; }
-.login__caja { width: 100%; max-width: 380px; }
-.login__marca { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; margin-bottom: 28px; }
-.login h1 { font-size: 26px; letter-spacing: -0.02em; margin-bottom: 6px; }
-.login p.suave { margin-bottom: 24px; }

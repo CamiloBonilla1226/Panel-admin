@@ -4,7 +4,7 @@ import { PlataformaProvider } from './hooks/usePlataforma'
 import { supabase } from './lib/supabase'
 import Layout from './components/Layout'
 import Cargando from './components/Cargando'
-import Login from './pages/Login'
+import Login, { PantallaCentrada } from './pages/Login'
 import Inicio from './pages/Inicio'
 import Negocios from './pages/Negocios'
 import Negocio from './pages/Negocio'
@@ -18,16 +18,14 @@ export default function App() {
 
   if (!esSuperadmin) {
     return (
-      <div className="login">
-        <div className="login__caja">
-          <h1>Sin acceso</h1>
-          <p className="suave">
-            La cuenta <span className="mono">{usuario.email}</span> no tiene el rol superadmin. Corre
-            {' '}<span className="mono">supabase/02-crear-superadmin.sql</span> con este correo y vuelve a entrar.
-          </p>
-          <button className="boton boton--bloque" onClick={() => supabase.auth.signOut()}>Cerrar sesión</button>
-        </div>
-      </div>
+      <PantallaCentrada>
+        <h1>Sin acceso</h1>
+        <p className="suave">
+          La cuenta <span className="mono">{usuario.email}</span> no tiene el rol superadmin. Corre
+          {' '}<span className="mono">supabase/02-crear-superadmin.sql</span> con este correo y vuelve a entrar.
+        </p>
+        <button className="boton boton--bloque" onClick={() => supabase.auth.signOut()}>Cerrar sesión</button>
+      </PantallaCentrada>
     )
   }
 
