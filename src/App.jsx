@@ -5,6 +5,7 @@ import { supabase } from './lib/supabase'
 import Layout from './components/Layout'
 import Cargando from './components/Cargando'
 import Login from './pages/Login'
+import Inicio from './pages/Inicio'
 import Negocios from './pages/Negocios'
 import Negocio from './pages/Negocio'
 
@@ -33,7 +34,7 @@ export default function App() {
     <PlataformaProvider>
       <Layout correo={usuario.email}>
         <Routes>
-          <Route path="/" element={<Negocios />} />
+          <Route path="/" element={<Inicio />} />
           <Route path="/negocios" element={<Negocios />} />
           <Route path="/negocios/:id" element={<Negocio />} />
           <Route path="*" element={<Navigate to="/" replace />} />
