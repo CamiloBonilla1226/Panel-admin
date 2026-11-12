@@ -316,40 +316,48 @@ function Usuarios({ datos, onCambio, notificar }) {
       )}
 
       <div className="usuarios">
-        {usuarios.map((u) => (
-          <div key={u.id} className="usuario">
-            <div className="usuario__fila">
-              <span className="usuario__nombre">{u.nombre}</span>
-              <span className={`insignia ${u.rol === 'dueño' ? 'insignia--info' : 'insignia--neutra'}`}>{u.rol === 'dueño' ? 'Dueño' : 'Empleado'}</span>
-              {!u.activo && <span className="insignia insignia--error">Desactivado</span>}
-            </div>
-            <div className="usuario__meta">
-              {enlaceWhatsapp(u.numero)
-                ? <a className="mono" href={enlaceWhatsapp(u.numero)} target="_blank" rel="noreferrer">{u.numero}</a>
-                : <span className="mono">{u.numero}</span>}
-              <span title={formatoFechaHora(u.ultimo_acceso)}>Último acceso: {hace(u.ultimo_acceso)}</span>
-              <span>Desde {formatoFecha(u.creado_en)}</span>
-            </div>
-            {restableciendo === u.id ? (
-              <FormularioContrasena
-                usuario={u}
-                onCancelar={() => setRestableciendo(null)}
-                onListo={() => { setRestableciendo(null); notificar('ok', `Contraseña de ${u.nombre} cambiada. Envíasela por un medio seguro.`) }}
-              />
-            ) : (
-              <div>
-                <button
-                  className="boton boton--chico"
-                  disabled={!u.auth_id}
-                  title={u.auth_id ? undefined : 'No se encontró su cuenta de acceso'}
-                  onClick={() => setRestableciendo(u.id)}
-                >
-                  Restablecer contraseña
-                </button>
+        {usuarios.map((u) => {
+          const whatsapp = enlaceWhatsapp(u.numero)
+          return (
+            <div key={u.id} className="usuario">
+              <div className="usuario__cabeza">
+                <div className="usuario__fila">
+                  <span className="usuario__nombre">{u.nombre}</span>
+                  <span className={`insignia ${u.rol === 'dueño' ? 'insignia--info' : 'insignia--neutra'}`}>{u.rol === 'dueño' ? 'Dueño' : 'Empleado'}</span>
+                  {!u.activo && <span className="insignia insignia--error">Desactivado</span>}
+                </div>
+                {whatsapp && (
+                  <a className="boton boton--chico boton--whatsapp boton--icono" href={whatsapp} target="_blank" rel="noreferrer" title={`Escribir a ${u.nombre}`} aria-label={`Escribir a ${u.nombre} por WhatsApp`}>
+                    <IconoWhatsapp />
+                  </a>
+                )}
               </div>
-            )}
-          </div>
-        ))}
+              <div className="usuario__meta">
+                <span className="mono" title="Número con el que entra al panel">{u.numero}</span>
+                <span title={formatoFechaHora(u.ultimo_acceso)}>Entró {hace(u.ultimo_acceso)}</span>
+                <span>Desde {formatoFecha(u.creado_en)}</span>
+              </div>
+              {restableciendo === u.id ? (
+                <FormularioContrasena
+                  usuario={u}
+                  onCancelar={() => setRestableciendo(null)}
+                  onListo={() => { setRestableciendo(null); notificar('ok', `Contraseña de ${u.nombre} cambiada. Envíasela por un medio seguro.`) }}
+                />
+              ) : (
+                <div>
+                  <button
+                    className="boton boton--chico boton--fantasma usuario__accion"
+                    disabled={!u.auth_id}
+                    title={u.auth_id ? undefined : 'No se encontró su cuenta de acceso'}
+                    onClick={() => setRestableciendo(u.id)}
+                  >
+                    Restablecer contraseña
+                  </button>
+                </div>
+              )}
+            </div>
+          )
+        })}
       </div>
     </Seccion>
   )
