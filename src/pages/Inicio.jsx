@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { inicioMes, usePlataforma } from '../hooks/usePlataforma'
 import { useTitulo } from '../hooks/useTitulo'
 import { estadoPago } from '../lib/estadoPago'
-import { formatoNumero, formatoPesos, hoyISO, nombreMes } from '../lib/formato'
+import { formatoNumero, formatoPesos, nombreMes } from '../lib/formato'
 import { Aviso, Encabezado, Indicador } from '../components/ui'
 import Cargando from '../components/Cargando'
 import Pendientes from '../components/Pendientes'
@@ -114,7 +114,7 @@ export default function Inicio() {
                       <span className="barras__valor">{m.total ? `${Math.round(m.total / 1000)}k` : ''}</span>
                     </div>
                   </div>
-                  <div className="barras__mes">{m.mes === hoyISO().slice(0, 7) ? 'Este mes' : nombreMes(m.mes)}</div>
+                  <div className="barras__mes">{nombreMes(m.mes)}</div>
                 </div>
               ))}
             </div>

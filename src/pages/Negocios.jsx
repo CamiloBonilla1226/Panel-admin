@@ -107,7 +107,7 @@ export default function Negocios() {
           <IconoBuscar />
           <input
             type="search"
-            placeholder="Buscar negocio, dueño o número"
+            placeholder="Buscar negocio o dueño"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             aria-label="Buscar"

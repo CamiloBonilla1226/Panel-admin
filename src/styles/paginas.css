@@ -14,7 +14,7 @@
 .buscador svg { width: 18px; height: 18px; color: var(--texto-3); flex: none; }
 .buscador input { flex: 1; min-width: 0; border: 0; outline: none; background: none; font-size: 16px; height: 100%; }
 .buscador input::placeholder { color: var(--texto-3); }
-.herramientas__orden { flex: 0 0 auto; width: auto; max-width: 46%; }
+.herramientas__orden { flex: 0 0 auto; width: auto; max-width: 40%; font-size: 14px; }
 @media (min-width: 760px) {
   .buscador input { font-size: 14px; }
   .herramientas__orden { max-width: none; }

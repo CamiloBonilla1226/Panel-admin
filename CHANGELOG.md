@@ -36,3 +36,4 @@ Decisiones técnicas y funcionalidades del panel maestro, en orden cronológico.
 - **Título por pantalla** (`useTitulo`): la pestaña del navegador y el selector de apps del celular muestran "Cobros · Panel maestro", el nombre del negocio, etc., para saber dónde quedó abierto.
 - **Botón Actualizar con hora** (`BotonActualizar`) en Inicio, Negocios y Cobros: muestra a qué hora se cargaron los datos y recarga al tocarlo. Con la app instalada en el celular es la forma de saber si lo que se ve está al día.
 - Limpieza: se quitan `InsigniaActivo` y `slugificar` (solo los usaba la pantalla de crear negocio y la lista vieja) e `InsigniaPago` deja de envolver la insignia cuando no lleva fecha.
+- Ajustes tras revisar capturas en celular (390 px) y PC (1440 px): el gráfico de Inicio rotula todos los meses por nombre (el actual ya se distingue por color) y el buscador de Negocios usa un texto corto para no cortarse junto al selector de orden.
