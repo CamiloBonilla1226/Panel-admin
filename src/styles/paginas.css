@@ -82,3 +82,13 @@
 /* ---------- Ficha del negocio ---------- */
 .aviso-flotante { position: sticky; top: calc(var(--barra-alto) + env(safe-area-inset-top) + 8px); z-index: 15; margin-bottom: 16px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); }
 @media (min-width: 900px) { .aviso-flotante { top: 16px; } }
+.form-datos { max-width: 760px; }
+/* El botón de guardar queda siempre a mano: pegado abajo, sobre la navegación del celular. */
+.barra-guardar {
+  position: sticky; bottom: calc(60px + env(safe-area-inset-bottom)); z-index: 10;
+  display: flex; justify-content: flex-end; padding: 12px 0;
+  background: linear-gradient(to top, var(--fondo) 70%, transparent);
+}
+.barra-guardar .boton { width: 100%; }
+@media (min-width: 600px) { .barra-guardar .boton { width: auto; } }
+@media (min-width: 900px) { .barra-guardar { bottom: 0; } }

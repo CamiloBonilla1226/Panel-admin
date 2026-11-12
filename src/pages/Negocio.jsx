@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import { llamarApi, rpc, traducirError } from '../lib/api'
 import { useDatos } from '../hooks/useDatos'
 import { usePlataforma } from '../hooks/usePlataforma'
-import { numeroContacto } from '../lib/enlaces'
+import { numeroContacto, urlApp, urlCorta } from '../lib/enlaces'
 import { estadoPago } from '../lib/estadoPago'
 import {
   enlaceWhatsapp, fechaDia, formatoFecha, formatoFechaHora, formatoNumero, formatoPesos,
@@ -211,50 +211,73 @@ function FormularioDatos({ datos, onGuardado, onError }) {
     }
   }
 
+  const enlace = urlApp({ dominio_propio: form.dominio_propio.trim(), url_sitio: form.url_sitio.trim() })
+
+  // Un solo formulario en tres grupos, en orden de importancia: la app, el
+  // cobro y los datos del negocio. Un solo botón guarda todo.
   return (
-    <Seccion titulo="Datos del negocio">
-      <form className="formulario" onSubmit={guardar}>
-        <div className="formulario__fila">
-          <Campo etiqueta="Nombre">
-            <input className="campo__control" required value={form.nombre} onChange={cambiar('nombre')} />
+    <form onSubmit={guardar} className="form-datos">
+      <Seccion titulo="App de domicilios">
+        <div className="formulario">
+          <Campo etiqueta="Enlace de la app" ayuda="El link de Vercel con el que los clientes piden. Ej. negocio.vercel.app">
+            <input
+              className="campo__control"
+              inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
+              placeholder="negocio.vercel.app"
+              value={form.url_sitio}
+              onChange={cambiar('url_sitio')}
+              autoFocus={!form.url_sitio && !form.dominio_propio}
+            />
           </Campo>
-          <Campo etiqueta="Slug">
-            <input className="campo__control mono" required pattern="[a-z0-9-]+" value={form.slug} onChange={cambiar('slug')} />
+          <Campo etiqueta="Dominio propio (opcional)" ayuda="Si el negocio compró su dominio, se usa este en vez del de Vercel.">
+            <input className="campo__control" inputMode="url" autoCapitalize="none" autoCorrect="off" placeholder="www.negocio.com" value={form.dominio_propio} onChange={cambiar('dominio_propio')} />
+          </Campo>
+          {enlace && <p className="chico suave">Se compartirá: <a className="enlace" href={enlace} target="_blank" rel="noreferrer">{urlCorta(enlace)}</a></p>}
+        </div>
+      </Seccion>
+
+      <Seccion titulo="Cobro">
+        <div className="formulario">
+          <div className="formulario__fila">
+            <Campo etiqueta="Plan">
+              <input className="campo__control" list="planes" value={form.plan} onChange={cambiar('plan')} />
+              <datalist id="planes"><option value="Básico" /><option value="Completo" /><option value="Gratis" /></datalist>
+            </Campo>
+            <Campo etiqueta="Valor mensual (COP)">
+              <input className="campo__control num" type="number" inputMode="numeric" min="0" step="1000" value={form.valor_mensual} onChange={cambiar('valor_mensual')} />
+            </Campo>
+          </div>
+          <Campo etiqueta="Próximo pago" ayuda="Se mueve sola al registrar un pago.">
+            <input className="campo__control" type="date" value={form.fecha_proximo_pago} onChange={cambiar('fecha_proximo_pago')} />
+          </Campo>
+          <Campo etiqueta="Notas privadas" ayuda="Solo las ves tú: acuerdos, contacto, pendientes.">
+            <textarea className="campo__control" value={form.notas} onChange={cambiar('notas')} />
           </Campo>
         </div>
-        <div className="formulario__fila">
+      </Seccion>
+
+      <Seccion titulo="Negocio">
+        <div className="formulario">
+          <div className="formulario__fila">
+            <Campo etiqueta="Nombre">
+              <input className="campo__control" required value={form.nombre} onChange={cambiar('nombre')} />
+            </Campo>
+            <Campo etiqueta="Slug" ayuda="Minúsculas, números y guiones.">
+              <input className="campo__control mono" required pattern="[a-z0-9-]+" autoCapitalize="none" value={form.slug} onChange={cambiar('slug')} />
+            </Campo>
+          </div>
           <Campo etiqueta="WhatsApp de pedidos" ayuda="Con indicativo, sin signos. Ej. 573001234567">
             <input className="campo__control mono" inputMode="numeric" required value={form.whatsapp_contacto} onChange={cambiar('whatsapp_contacto')} />
           </Campo>
-          <Campo etiqueta="Próximo pago">
-            <input className="campo__control" type="date" value={form.fecha_proximo_pago} onChange={cambiar('fecha_proximo_pago')} />
-          </Campo>
         </div>
-        <div className="formulario__fila">
-          <Campo etiqueta="Plan">
-            <input className="campo__control" list="planes" value={form.plan} onChange={cambiar('plan')} />
-            <datalist id="planes"><option value="Básico" /><option value="Completo" /><option value="Gratis" /></datalist>
-          </Campo>
-          <Campo etiqueta="Valor mensual (COP)">
-            <input className="campo__control num" type="number" min="0" step="1000" value={form.valor_mensual} onChange={cambiar('valor_mensual')} />
-          </Campo>
-        </div>
-        <div className="formulario__fila">
-          <Campo etiqueta="URL del sitio" ayuda="El link de Vercel del negocio">
-            <input className="campo__control" placeholder="negocio.vercel.app" value={form.url_sitio} onChange={cambiar('url_sitio')} />
-          </Campo>
-          <Campo etiqueta="Dominio propio">
-            <input className="campo__control" placeholder="www.negocio.com" value={form.dominio_propio} onChange={cambiar('dominio_propio')} />
-          </Campo>
-        </div>
-        <Campo etiqueta="Notas privadas" ayuda="Solo las ves tú: acuerdos, contacto, pendientes.">
-          <textarea className="campo__control" value={form.notas} onChange={cambiar('notas')} />
-        </Campo>
-        <div className="acciones-form">
-          <button className="boton boton--primario" disabled={guardando}>{guardando ? 'Guardando…' : 'Guardar cambios'}</button>
-        </div>
-      </form>
-    </Seccion>
+      </Seccion>
+
+      <div className="barra-guardar">
+        <button className="boton boton--primario" disabled={guardando}>{guardando ? 'Guardando…' : 'Guardar cambios'}</button>
+      </div>
+    </form>
   )
 }
 
